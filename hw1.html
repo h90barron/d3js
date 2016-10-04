@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    
+<head>
+<meta charset="utf-8">
+<title>Hello</title>
+<script src = "d3.min.js" charset = "utf-8"></script>
+</head>
+<body>
+    <h3>Reporting Tool</h3>
+    <table style = "width: 100%">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+<script>
+
+var dat_one;
+var dat_two;
+var remainder = 2;
+
+d3.csv("ptest_one.csv", function(csv){
+    dat_one = csv;
+    if(!--remainder){
+        doSomething();
+    }
+});
+
+d3.csv("ptest_two.csv", function(csv){
+    dat_two = csv;
+    if(!--remainder){
+        doSomething();
+    }
+});
+ 
+function doSomething(){
+    var nDat = [];
+    
+    //combining column headers first
+    //init nDat to primary dataset first
+    
+    
+    nDat = (d3.keys(dat_one[0]));
+    //console.log(dat_one);
+    var tempKeysOne = (d3.keys(dat_one[0]));
+    var tempKeysTwo = (d3.keys(dat_two[0]));
+  
+     //check if each secondary key is in primary set
+     //push to nDat array if so
+    var flag = false;
+    for(var i = 0; i < tempKeysTwo.length; i++){
+        flag = false;
+        for(var j = 0; j < tempKeysOne.length; j++){
+            if(tempKeysTwo[i] == tempKeysOne[j]){
+                flag = true;
+            }
+        }
+        
+        if(!flag){
+            nDat.push(tempKeysTwo[i]);
+           //nDat will be array with index as keys and headers as vals
+        }
+    }
+    
+    
+    var datTemp = []
+    var template = [];
+    var array = [];
+    
+    /************************************************************
+     * build array of objects using the nDat vals as keys
+     * and check the primary data to see which vals it containts
+     * by checking to see if the obj has the same keys as nDat. if yes
+     * then add val to template if no then give 0
+     * *************************************************************/
+     
+     
+    for(var j = 0; j < dat_one.length; j++){
+        //start by init datTemp to primary data
+        datTemp = dat_one[j];
+    
+        for(var i = 0; i < nDat.length; i++){
+            if(datTemp.hasOwnProperty(nDat[i])){        //check header from nDat
+                template[nDat[i]] = datTemp[nDat[i]];     
+            } else {
+                template[nDat[i]] = "0";
+            }
+        }
+        console.log(template);
+        array.push(template);
+        template = [];
+        
+    }
+        /*******************************************************************
+         * checking to see if the primary and secondary
+         * data sets contain the the sames devices by checking for same vals for
+         * "Device Name" key. this needs to change to something that is more 
+         * robust. if they match fill in data from secondary for device 
+         * *******************************************************************/
+        
+        
+        
+        for(var i = 0; i < dat_two.length; i++ ){
+            
+            for(var j = 0; j < array.length; j++){
+                if(dat_two[i]["UserName"] == array[j]["UserName"]){  //check vals, nested objects
+                    array[j]["copies"] = dat_two[i]["copies"];
+                    array[j]["scans"] = dat_two[i]["scans"];
+                    array[j]["faxes"] = dat_two[i]["faxes"];
+                    
+                }
+            }
+        }
+        
+        console.log(array);
+        
+        buildTable(array);
+      
+
+}
+//build table from array data
+function buildTable(x){
+    
+    var thead = d3.select("thead").selectAll("th")
+    .data(d3.keys(x[0]))
+    .enter()
+    .append("th")
+    .text(function(d){return d});
+    
+    var tr = d3.select("tbody").selectAll("tr")
+    .data(x)
+    .enter().append("tr");
+
+    // cells
+    var td = tr.selectAll("td")
+    .data(function(d){return d3.values(d)})
+    .enter()
+    .append("td")
+    .text(function(d) {return d});
+}
+
+</script>  
+    
+    
+    </body>
+
+</html>

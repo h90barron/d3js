@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <title>Reporting Tool</title>
+    <script src="d3.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <script>
+        var height = 600;
+        var width = 600;
+        var headerSelection = []
+        var jobTypeSelection = [];
+        var dat_one;
+        var dat_two;
+        var remainder = 2;
+        headerSelection = ["Device", "Job Type", "Color Pages", "Grayscale Pages",
+            "Duplex Pages", "Simplex Pages", "Total Printed Pages", "Cost"
+        ];
+        //console.log(headerSelection);
+        jobTypeSelection = ["Printing", "Copying", "Scanning", "Faxing"];
+        fileMapInit(jobTypeSelection)
+
+        function fileMapInit(x) {
+            var selection = [];
+            var fileOne;
+            var fileTwo;
+            selection = x;
+            if (selection.indexOf("Printing") > -1) {
+                fileOne = "print_summary_by_printer.csv";
+            }
+            if (selection.indexOf("Copying") > -1) {
+                fileTwo = "job_type_summary_by_device.csv";
+            }
+
+            if (fileOne != null && fileTwo != null) {
+                pullFiles(fileOne, fileTwo);
+            }
+
+        }
+
+
+        function pullFiles(x, y) {
+            var fFile = x;
+            var sFile = y;
+
+            // if(jobTypeSelection.hasOwnProperty("Printing") && jobTypeSelection.hasOwnProperty("Scanning")){
+            d3.csv(fFile, function(csv) {
+                dat_one = csv;
+                if (!--remainder) {
+                    buildArray();
+
+                }
+            });
+
+            d3.csv(sFile, function(csv) {
+                dat_two = csv;
+                if (!--remainder) {
+                    buildArray();
+
+                }
+            });
+        }
+
+        // }
+
+        function buildArray() {
+                var tempArray = [];
+                var newDataSet = [];
+                builderArray = [];
+                // console.log(tempArray);
+                for (var j = 0; j < dat_two.length; j++) {
+                    tempArray = dat_two[j];
+
+                    for (var i = 0; i < headerSelection.length; i++) {
+
+                        if (tempArray.hasOwnProperty(headerSelection[i])) {
+                            builderArray[headerSelection[i]] = tempArray[headerSelection[i]];
+                        }
+                        if (builderArray[headerSelection[i]] == "") {
+                            builderArray[headerSelection[i]] = 0;
+                        }
+
+                    }
+
+                    //console.log(builderArray);
+                    newDataSet.push(builderArray);
+                    builderArray = [];
+                }
+
+                //console.log(newDataSet);
+
+
+                for (var j = 0; j < dat_one.length; j++) {
+                    tempArray = dat_one[j];
+                    for (var i = 0; i < headerSelection.length; i++) {
+
+                        if (tempArray.hasOwnProperty(headerSelection[i])) {
+                            builderArray[headerSelection[i]] = tempArray[headerSelection[i]];
+                        }
+                        else if (headerSelection[i] == "Device") {
+                            builderArray[headerSelection[i]] = tempArray["Printer Name"];
+                        }
+                        else if (headerSelection[i] == "Job Type") {
+                            builderArray[headerSelection[i]] = "Printing";
+                        }
+                        else {
+                            builderArray[headerSelection[i]] = 0;
+                        }
+
+                    }
+                    //console.log(builderArray);
+                    newDataSet.push(builderArray);
+                    builderArray = [];
+                }
+                //console.log(newDataSet);
+                newDataSet.sort(function(a, b) {
+                    if (a["Device"] < b["Device"]) return 1;
+                    if (a["Device"] > b["Device"]) return -1;
+                    return 0;
+                });
+                // buildTable(newDataSet);
+                costByJob(newDataSet);
+
+
+            }
+            /****************************************************************
+             * attempting to break the data apart and leaving only the cost
+             * per job type. Then taking those and creating a bar chart.
+             *
+             * ****************************************************************/
+        function costByJob(data) {
+            var cDataSet = [];
+            var tempArray = [];
+            var tDataSet = [];
+            //console.log(tDataSet);
+            //cDataSet = [{"Printing": 0, "Scanning": 0, "Faxing": 0, "Copying": 0} ];
+
+            console.log("Here it is!!!!");
+            for (var i = 0; i < data.length; i++) {
+                tempArray = data[i];
+                if (!cDataSet.hasOwnProperty(tempArray["Job Type"])) {
+                    cDataSet[tempArray["Job Type"]] = +0;
+                }
+                cDataSet[tempArray["Job Type"]] += +tempArray["Cost"];
+                tempArray = [];
+            }
+
+            for (var i = 0; i < cDataSet.length; i++) {
+                tDataSet.push(cDataSet[i]);
+            }
+            console.log(tDataSet);
+
+            /*
+            var svg = d3.select("body").append("svg").attr({width: 600, height: 600});
+            
+            y = d3.scale.linear()
+                .range([height, 0])
+                .domain([0, d3.max(cDataSet), function(d){ return Math.floor(d);}]);
+                
+            barWidth = width/9;
+            
+            var bar = svg.selectAll("g")
+                .data(cDataSet)
+                .enter()
+                .append("g")
+                .attr("transform", function(d, i) {
+                    return "translate(" + i * barWidth + ", 0)";});
+                
+            bar.append("rect")
+                .attr({
+                    "y": function(d){ return y(Math.floor(d)); },
+                    "height": function(d){ return height -y(Math.floor(d)); },
+                    "width": barWidth - 1,
+                    "fill": "blue"
+                });
+                
+                
+            
+            
+        */
+        }
+
+        function costByDevice(data) {}
+    </script>
+</body>
+</hmtl>

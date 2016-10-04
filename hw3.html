@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <title>Reporting Tool</title>
+    <script src="d3.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <h3>Reporting Tool</h3>
+
+    <script>
+        var w = 500;
+        var h = 500;
+        var dataset = [{
+            "x": 25,
+            "y": 24
+        }, {
+            "x": 36,
+            "y": 32
+        }, {
+            "x": 44,
+            "y": 21
+        }, {
+            "x": 53,
+            "y": 46
+        }];
+
+
+        var svg = d3.select("body").append("svg").attr({
+            width: w,
+            height: h
+        });
+        var xRange = d3.scale.linear()
+            .range([40, 400])
+            .domain([d3.min(dataset, function(d) {
+                    return d.x;
+                }),
+                d3.max(dataset, function(d) {
+                    return d.x;
+                })
+            ]);
+        var yRange = d3.scale.linear()
+            .range([400, 40])
+            .domain([d3.min(dataset, function(d) {
+                    return d.y;
+                }),
+                d3.max(dataset, function(d) {
+                    return d.y;
+                })
+            ]);
+
+        var xAxis = d3.svg.axis().scale(xRange);
+        var yAxis = d3.svg.axis().scale(yRange).orient("left");
+        initChart();
+
+        function initChart() {
+            svg.append("svg:g").call(xAxis).attr("transform", "translate(0, 400)");
+            svg.append("svg:g").call(yAxis).attr("transform", "translate(40, 0)");
+            var circles = svg.selectAll("circles")
+                .data(dataset)
+                .enter()
+                .append("circle")
+                .attr({
+                    cx: function(d) {
+                        return xRange(d.x);
+                    },
+                    cy: function(d) {
+                        return yRange(d.y);
+                    },
+                    r: 10
+                })
+                .style("fill", "blue");
+
+        }
+    </script>
+
+</body>
+
+</html>

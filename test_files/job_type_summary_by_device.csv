@@ -1,0 +1,11 @@
+# Device copy/scan/fax - breakdown,,,,,,,,,,
+"# From date = May 4, 2015 12:00:00 AM, To date = Jun 3, 2015 2:03:41 PM",,,,,,,,,,
+Device,Job Type,Color Pages,Grayscale Pages,Duplex Pages,Simplex Pages,Total Printed Pages,Cost,Physical Printer Identifier,Printer Type/Model,Location
+ricoh aficio mp c3501 pcl 6,Scanning,344,334,200,,678,205.4,,,
+Science Lab Copier,Copying,200,103,,,303,110.3,,,
+Science Lab Copier,Scanning,303,229,,,532,174.4,,,
+HQ Dell mfp,Faxing,217,455,300,,672,154,,,
+HQ Dell mfp,Scanning,346,301,,,647,203.1,,,
+HQ Dell mfp,Copying,187,606,,,793,154.1,,,
+Second Floor mfp,Scanning,89,102,,,191,54.7,,,
+Break Room mfp,Scanning,87,110,,,202,60,,,

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    
+<head>
+<meta charset="utf-8">
+<title>Hello...</title>
+<script src = "d3.min.js" charset = "utf-8"></script>
+</head>
+<body>
+    <h3>hello world!</h3>
+    <table style = "width: 100%">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+<script>
+var h = 500;
+var w = 500;
+var salesTotal = 0.0;
+var ds;
+var nds;
+var temp;
+
+/*
+var xScale = d3.scale.linear()
+    .domain([
+        d3.min(ds, function(d){ return d.month; }),
+        d3.max(ds, function(d){ return d.month; })
+        ])
+    .range(0, w);
+    
+var yScale = d3.scale.linear()
+    .domain([0, d3.max(ds, function(d) {return d.sales; }) ])
+    .range([h, 0]);
+
+var xScale;
+var yScale;
+function buildLine() {
+    var lineFun = d3.svg.line()
+        .x(function(d){ return d.month; })
+        .y(function(d){ return h - d.sales; })
+        .interpolate("linear");
+        
+    var svg = d3.select("body").append("svg").attr({width: w, height: h});
+    
+    
+    var viz = svg.append("path")
+        .attr({
+            d: lineFun(ds),
+            "stroke": "purple",
+            "stroke-width": 2,
+            "fill": "none"
+            });
+        
+}
+
+function showTotals(){
+    var t =d3.select("body").append("table");
+    for(var i = 0; i < ds.length; i++) {
+        salesTotal += ds[i]['sales']*1; //num convert
+    }
+    
+    var tr = t.selectAll("tr")
+        .data([1])
+        .enter()
+        .append("tr")
+        .append("td")
+        .text("Sales Total: " + salesTotal);
+        
+}
+
+*/
+function secondRead() {
+d3.csv("ptest_two.csv", function(csv) {
+    cs = csv.filter(function(row) {
+        return row['Device Name'] == 'Back Copier';
+    })
+    ds = cs;
+
+var thead = d3.select("thead").selectAll("th")
+    .data(d3.keys(ds[0]))
+    .enter()
+    .append("th")
+    .text(function(d){return d});
+    
+var tr = d3.select("tbody").selectAll("tr")
+    .data(ds)
+    .enter().append("tr");
+
+// cells
+var td = tr.selectAll("td")
+  .data(function(d){return d3.values(d)})
+  .enter()
+  .append("td")
+  .text(function(d) {return d});
+
+    });
+}
+
+d3.csv("ptest_one.csv", function(error, data){
+    if(error){
+        console.log(error);
+        d3.select("body").append("h3").text("failed");
+        return null;
+    } else {
+        //console.log(data);
+        d3.select("body").append("h3").text("worked");
+        return data;
+    }
+    secondRead();
+    console.log(ds);
+});
+     // buildLine();
+    // showTotals();
+    /*
+    var thead = d3.select("thead").selectAll("th")
+    .data(d3.keys(nds[0]))
+    .enter()
+    .append("th")
+    .text(function(d){return d});
+    
+var tr = d3.select("tbody").selectAll("tr")
+    .data(nds)
+    .enter().append("tr");
+
+// cells
+var td = tr.selectAll("td")
+  .data(function(d){return d3.values(d)})
+  .enter()
+  .append("td")
+  .text(function(d) {return d});
+});
+*/
+
+   // console.log("check below this as well: ");
+    //console.log(nds);
+    
+</script>
+</body>
+
+</html>

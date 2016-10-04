@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <title>Reporting Tool</title>
+    <script src="d3.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <script>
+        var data = {"CA": 10, "US": 369, "CU": 9, "BR": 89, "MX": 19 };
+        var svg = d3.select("body").append("svg").attr({width: 500, height: 500});
+        
+        var bubble = d3.layout.pack()
+            .size([450, 450])
+            .padding(3)
+            .value((function(d){ return d.size; }));
+        
+        
+        
+        var nodes = bubble.nodes(processDat(data))
+            .filter(function(d){ return !d.children; });
+        console.log(nodes);
+        
+            
+        var viz = svg.selectAll("circle")
+                .data(nodes);
+                
+        viz.enter().append("circle")
+            .attr('transform', function(d) {
+                console.log(d.x + " " + d.y);
+                return 'translate(' + d.x +',' + d.y + ')'; })
+            .attr('r', function(d) {return d.r; })
+            .attr("fill", "blue");
+                
+                //class: function(d) { return "blue"; }
+            
+            
+        
+        function processDat(dat) {
+            var dSet = [];
+            
+            var obj = dat;
+            
+            for(var prop in obj){
+                dSet.push({
+                    name: prop,
+                    //className: prop.toLowerCase(),
+                    size: obj[prop]
+                });
+            }
+             return{children: dSet};
+        }
+        
+    </script>
