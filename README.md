@@ -1,1 +1,1 @@
-An older repo expirementing with d3.js to create a reporting and data visualization tool for ACDI. Using jquery, jquery_tablesorter and d3. 
+An older hacking around with d3.js to create a reporting and data visualization tool for ACDI. Using jquery, jquery_tablesorter and d3. hw1 through hw5 are expirements with different ways to visualize and collect the data. The primary purpose was to get a feel for what would possibly with d3
